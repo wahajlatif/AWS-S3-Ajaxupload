@@ -14,4 +14,4 @@ MvcWiths3API/Models/s3Service.cs
 MvcWiths3API/Models/UploadUtility.cs
 
 
-
+Demo available : http://s3example.vo2cloud.com/
