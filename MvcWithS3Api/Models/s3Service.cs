@@ -52,12 +52,7 @@ namespace MvcWithS3Api.Models
             s3Client.PutObject(putObject);
 
 
-            new Thread(() =>
-            {
-                Thread.Sleep(1000 * 60);
-                DeleteAllFilesFromBucket("wabuketajax1");
-               
-            }).Start();
+            
         }
 
 
