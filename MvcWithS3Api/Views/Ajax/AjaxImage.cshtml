@@ -1,0 +1,167 @@
+﻿@model MvcWithS3Api.ViewModel.AjaxImageViewModel
+
+
+<div class="widget-body" id="@Model.UpdateTarget">
+
+    @* you can use both ajax or post form action *@
+    @*@using (Html.BeginForm("AjaxImage", "Home", new { ReturnURl = Request.Url.AbsoluteUri, }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "sky-form" }))*@
+    @using (Ajax.BeginForm("AjaxImage", "Ajax", new { ReturnURl = Request.Url.AbsoluteUri }, new AjaxOptions { UpdateTargetId = @Model.UpdateTarget, HttpMethod = "post" }, new { enctype = "multipart/form-data", name = @Model.UpdateTarget, @class = "sky-form" }))
+    {
+
+
+
+        <div>
+            @if (!string.IsNullOrWhiteSpace(Model.ControllerTitle))
+            {
+                <header>@Model.ControllerTitle</header>
+
+            }
+
+
+            @Html.ValidationSummary(true)
+
+            @*you can encrypt all the data*@
+            <input type="hidden" name="ReturnURL" value="@Request.Url.AbsolutePath" />
+            <input type="hidden" name="UpdateTarget" value="@Model.UpdateTarget" />
+            <input type="hidden" name="ControllerTitle" value="@Model.ControllerTitle" />
+            <input type="hidden" name="BucketName" value="@Model.BucketName" />
+            <input type="hidden" name="BuketFolder" value="@Model.BuketFolder" />
+            <input type="hidden" name="SubFolder" value="@Model.SubFolder" />
+            <input type="hidden" name="MulitpleImages" value="@Model.MulitpleImages.ToString()" />
+            <input type="hidden" name="Thumbnail" value="@Model.Thumbnail.ToString()" />
+            @if (Model.UploadFileURL.Count != 0)
+            {
+                <fieldset>
+                    <div class="col-md-8">
+                        @foreach (var item in Model.UploadFileURL)
+                        {
+                            var imageURL = WebHelper.GenerateURL(Model.BucketName, Model.BuketFolder, Model.SubFolder, item);
+
+                            <img style="top: 0px;position: initial; max-width: 150px;" src="@imageURL" />
+                            <a href="@imageURL" target="_blank">@imageURL</a>
+
+
+                        }
+                    </div>
+                </fieldset>
+            }
+            
+
+
+    <fieldset>
+        <section>
+
+
+            <div class="form-group">
+
+                <div class="col-md-12">
+                    @{string btn = "btn" + Model.UpdateTarget;
+                            string loader = "loader" + Model.UpdateTarget;
+
+                    }
+                    @if (Model.MulitpleImages)
+                            {
+                        <div class="sky-form">
+
+
+                            <label for="file" class="input input-file">
+                                <div class="button"><input type="file" id="FileUpload" name="FileUpload" multiple onchange="this.parentNode.nextSibling.value = this.value;$('#@btn').click(); ">@WebHelper.GetResource("Browse")</div><input type="text" value="@WebHelper.GetResource("Please Choose file")" readonly="">
+                            </label>
+
+                        </div>
+
+
+                            }
+                            else
+                            {
+                        <div class="sky-form">
+
+
+                            <label for="file" class="input input-file">
+                                <div class="button"><input type="file" id="FileUpload" name="FileUpload" onchange="this.parentNode.nextSibling.value = this.value;$('#@btn').click(); ">@WebHelper.GetResource("Browse")</div><input type="text" value="@WebHelper.GetResource("Please Choose file")" readonly="">
+                            </label>
+
+                        </div>
+
+                            }
+
+                    <div id="@loader" style="display:none">
+                        <img src="~/Content/assets/loader.gif" /> @WebHelper.GetResource("Uploading ...")
+
+                    </div>
+                    <br />
+                    <span class="label rounded label-orange" style="color:white;">@WebHelper.GetResource("Try small size, if there is an error.")</span>
+                    <br />
+
+
+
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <div class="row">
+                    <div class="col-md-12">
+                        @*This button is for when jquery is not working*@
+                        <button class="btn btn-primary sbbtn" type="submit" id="@btn" style="display:none; ">
+                            <i class="fa fa-upload"></i>
+                            @WebHelper.GetResource("Upload")
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+            <script>
+
+                $(document).ready(function () {
+                    $("#@btn").click(function () {
+
+                        $("#@loader").show(100);
+                    });
+                });
+
+            </script>
+
+
+        </section>
+    </fieldset>
+
+
+</div>
+    }
+
+</div>
+
+<script>
+
+
+
+    window.addEventListener("submit", function (e) {
+
+        var form = e.target;
+        if (form.getAttribute("enctype") === "multipart/form-data") {
+            if (form.dataset.ajax) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var xhr = new XMLHttpRequest();
+                xhr.open(form.method, form.action);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        if (form.dataset.ajaxUpdate) {
+                            var updateTarget = document.querySelector(form.dataset.ajaxUpdate);
+                            if (updateTarget) {
+                                updateTarget.innerHTML = xhr.responseText;
+                            }
+                        }
+                    }
+                };
+                xhr.send(new FormData(form));
+            }
+        }
+    }, true);
+
+
+
+
+</script>
+

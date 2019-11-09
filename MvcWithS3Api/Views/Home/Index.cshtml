@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+ 
+ 
+ <p>
+     I am using unify bootstrap template theme parts for this AJAX s3 Upload Example.<br />
+     Theme can be change very easily from the _layout.cshtml<br />
+     Dont worry if it does not render good.<br />
+     <br />
+     Requirment :<br />
+     1. unobtrusive-ajax<br /> 
+     2. aws.s3<br />
+     3. any bootstrap theme (optional)<br />
+     4. jquery libs are very imp<br />
+     <br />
+
+     The reason to create this code is to easly plug the code in any project and play.
+     <br />
+     // Note : if user doesnt want to use the aws.s3 then other service provider can be integreated very easliy<br />
+     // The image will be avaialble aprox 1 min available and then deleted as its a demo version.
+     
+ </p>
+
+ 
+@{Html.RenderAction("AjaxImage", "Ajax", new { Model = new MvcWithS3Api.ViewModel.AjaxImageViewModel { 
+    
+    BucketName = "wabuketajax1",
+    BuketFolder =  FolderName.Application,
+    SubFolder =  SubFolderName.None,
+    Thumbnail = false,
+
+    ControllerTitle = "Single Upload by ajax",
+
+     
+    //Very imp for ajax
+    UpdateTarget = "AjaxImageUpload", // UpdateTarget should be unique if using multiple ajax control on same view
+    MulitpleImages = false
+
+    // Ajax Controller Config END
+  
+  } });}
+
+
+
+<br />
+
+ 
+@{Html.RenderAction("AjaxImage", "Ajax", new
+{
+    Model = new MvcWithS3Api.ViewModel.AjaxImageViewModel
+    {
+
+        BucketName = "wabuketajax1",
+        BuketFolder = FolderName.Application,
+        SubFolder = SubFolderName.None,
+        Thumbnail = true,
+
+        ControllerTitle = " Multiple Upload by ajax with Thumbnails",
+
+
+        //Very imp for ajax
+        UpdateTarget = "AjaxImageUpload1", // UpdateTarget should be unique if using multiple ajax control on same view
+        MulitpleImages = true
+
+        // Ajax Controller Config END
+
+    }
+});}
+
